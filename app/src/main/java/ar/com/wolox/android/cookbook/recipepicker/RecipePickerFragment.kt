@@ -1,6 +1,7 @@
 package ar.com.wolox.android.cookbook.recipepicker
 
 import android.content.Intent
+import androidx.recyclerview.widget.GridLayoutManager
 import ar.com.wolox.android.cookbook.R
 import ar.com.wolox.android.cookbook.analytics.AnalyticsRecipeActivity
 import ar.com.wolox.android.cookbook.coroutines.CoroutinesRecipeActivity
@@ -20,23 +21,31 @@ import ar.com.wolox.android.cookbook.room.RoomRecipeActivity
 import ar.com.wolox.android.cookbook.tests.TestLoginRecipeActivity
 import ar.com.wolox.android.cookbook.twitterlogin.TwitterLoginRecipeActivity
 import ar.com.wolox.wolmo.core.fragment.WolmoFragment
-import kotlinx.android.synthetic.main.fragment_recipe_picker.*
+import kotlinx.android.synthetic.main.fragment_recipe_list.*
 
 class RecipePickerFragment : WolmoFragment<RecipePickerPresenter>(), RecipePickerView {
 
-    override fun layout() = R.layout.fragment_recipe_picker
+    override fun layout() = R.layout.fragment_recipe_list
 
-    override fun init() {}
+    override fun init() {
+    }
 
     override fun showRecipes(recipes: List<Recipe>) {
-
-        vRecipePickerSelectionViewPager.apply {
-            adapter = RecipeViewPager(mapRecipesToItems(recipes)) {
-                presenter.onRecipeClicked(it)
+        vRecipeList.apply {
+            adapter = RecipePickerAdapter().apply {
+                submitList(mapRecipesToItems(recipes))
             }
-            setPageTransformer(false, CarouselEffectTransformer())
-            pageMargin = resources.getDimensionPixelSize(R.dimen.spacing_medium_more)
+            layoutManager = GridLayoutManager(context, 4)
+            isNestedScrollingEnabled = false
+            isFocusable = false
         }
+//        vRecipePickerSelectionViewPager.apply {
+//            adapter = RecipeViewPager(mapRecipesToItems(recipes)) {
+//                presenter.onRecipeClicked(it)
+//            }
+//            setPageTransformer(false, CarouselEffectTransformer())
+//            pageMargin = resources.getDimensionPixelSize(R.dimen.spacing_medium_more)
+//        }
     }
 
     private fun mapRecipesToItems(recipes: List<Recipe>): List<RecipeItem> {
